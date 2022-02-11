@@ -15,14 +15,11 @@ export enum CellStatus {
   'ALIVE',
 }
 export interface Cell {
-  x: number;
-  y: number;
-  status: string;
+  status: CellStatus;
 }
 
-let grid: Cell[][];
-const rows = 5;
-const cols = 5;
+const rows = 6;
+const cols = 6;
 
 export const App = () => {
   const [gridState, setGridState] = useState(createNewGrid());
@@ -33,28 +30,89 @@ export const App = () => {
         <h1>Game of Life</h1>
       </div>
 
-      <div className="hello">{renderPrettyGridTable(gridState)}</div>
+      <div className="prettyGridTable">{renderPrettyGridTable(gridState)}</div>
       <div className="gridTable">{renderGridTable(gridState)}</div>
 
-      <Button onClick={() => changeStatus(gridState, setGridState)}>
-        Change cell status
+      <Button
+        variant="contained"
+        color="success"
+        onClick={() => setGridState(createNewGrid())}
+      >
+        New Grid
+      </Button>
+
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={() => computeNextGen(gridState, setGridState)}
+      >
+        Next gen
       </Button>
     </div>
   );
 };
 
-const changeStatus = (gridState, setGridState) => {
-  let r = Math.floor(Math.random() * rows);
-  let c = Math.floor(Math.random() * cols);
+const computeNextGen = (gridState: Cell[][], setGridState) => {
+  let ng = [];
+
+  for (let x = 0; x < rows; x++) {
+    ng[x] = [];
+    for (let y = 0; y < cols; y++) {
+      const cellStatus = gridState[x][y].status;
+      const neighboursCount = countCellNeighbours(gridState, x, y);
+
+      if (cellStatus === CellStatus.ALIVE) {
+        if (neighboursCount === 2 || neighboursCount === 3) {
+          ng[x][y] = CellStatus.ALIVE;
+        } else {
+          ng[x][y] = CellStatus.DEAD;
+        }
+      } else {
+        if (neighboursCount === 3) {
+          ng[x][y] = CellStatus.ALIVE;
+        } else {
+          ng[x][y] = CellStatus.DEAD;
+        }
+      }
+    }
+  }
 
   let newGridState = [...gridState];
-  newGridState[r][c].status = '1';
-  setGridState(newGridState);
+  for (let x = 0; x < rows; x++) {
+    for (let y = 0; y < cols; y++) {
+      newGridState[x][y].status = ng[x][y];
+    }
+  }
 
-  console.log('state after:', gridState);
+  setGridState(newGridState);
 };
 
-const renderPrettyGridTable = gridState => {
+const countCellNeighbours = (gridState: Cell[][], cx: number, cy: number) => {
+  const neighbors = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+  ];
+  let count = 0;
+
+  neighbors.forEach(([x, y]) => {
+    const newI = cx + x;
+    const newJ = cy + y;
+
+    if (newI >= 0 && newI < rows && newJ >= 0 && newJ < cols) {
+      if (gridState[newI][newJ].status === CellStatus.ALIVE) count++;
+    }
+  });
+
+  return count;
+};
+
+const renderPrettyGridTable = (gridState: Cell[][]) => {
   return (
     <TableContainer component={Paper} style={{ maxWidth: '500px' }}>
       <Table size="small" aria-label="a dense table">
@@ -69,7 +127,6 @@ const renderPrettyGridTable = gridState => {
                   <TableCell
                     key={rowIndex + '-' + sIndex}
                     align="center"
-                    style={{ width: '5%' }}
                     padding="normal"
                     size="medium"
                   >
@@ -85,7 +142,7 @@ const renderPrettyGridTable = gridState => {
   );
 };
 
-function renderGridTable(gridState) {
+function renderGridTable(gridState: Cell[][]) {
   return (
     <table>
       <tbody>
@@ -104,28 +161,28 @@ function renderGridTable(gridState) {
 }
 
 const createNewGrid = () => {
-  grid = [];
+  let grid = [];
 
   for (let i = 0; i < rows; i++) {
     grid[i] = [];
     for (let j = 0; j < cols; j++) {
-      grid[i][j] = { x: i, y: j, status: '0' };
+      grid[i][j] = {
+        status: CellStatus.DEAD,
+      };
     }
   }
+
+  grid[1][1].status = CellStatus.ALIVE;
+  grid[1][2].status = CellStatus.ALIVE;
+  grid[2][1].status = CellStatus.ALIVE;
+  grid[2][2].status = CellStatus.ALIVE;
+
+  grid[3][3].status = CellStatus.ALIVE;
+  grid[3][4].status = CellStatus.ALIVE;
+  grid[4][3].status = CellStatus.ALIVE;
+  grid[4][4].status = CellStatus.ALIVE;
 
   return grid;
-};
-
-const printGrid = () => {
-  let gridString = '';
-  for (let i = 0; i < rows; i++) {
-    gridString += '\nROW: ' + i + '  ';
-    for (let j = 0; j < cols; j++) {
-      gridString += grid[i][j].status + ' ';
-    }
-
-    console.log(gridString);
-  }
 };
 
 export default App;
