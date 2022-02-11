@@ -1,5 +1,7 @@
 import {
   Button,
+  Container,
+  Grid,
   Paper,
   Table,
   TableBody,
@@ -7,48 +9,55 @@ import {
   TableContainer,
   TableRow,
 } from '@mui/material';
+import { color } from '@mui/system';
 import { useState } from 'react';
 import './App.css';
+import { Cell, CellStatus } from './models/cell';
+import { color_palette } from './models/constants/constants';
 
-export enum CellStatus {
-  'DEAD',
-  'ALIVE',
-}
-export interface Cell {
-  status: CellStatus;
-}
-
-const rows = 6;
-const cols = 6;
+const rows = 10;
+const cols = 10;
 
 export const App = () => {
   const [gridState, setGridState] = useState(createNewGrid());
 
   return (
-    <div className="App">
-      <div className="mui-container">
-        <h1>Game of Life</h1>
+    <Container maxWidth="md" className="App">
+      <h1>Game of Life</h1>
+      <div className="prettyGridTable">
+        {renderPrettyGridTable(gridState, setGridState)}
       </div>
+      <div className="controls">
+        <Button
+          className="btn"
+          variant="contained"
+          color="success"
+          onClick={() => setGridState(createNewGrid())}
+        >
+          New Grid
+        </Button>
 
-      <div className="prettyGridTable">{renderPrettyGridTable(gridState)}</div>
-      <div className="gridTable">{renderGridTable(gridState)}</div>
-
-      <Button
-        variant="contained"
-        color="success"
-        onClick={() => setGridState(createNewGrid())}
-      >
-        New Grid
-      </Button>
-
-      <Button
-        variant="outlined"
-        color="primary"
-        onClick={() => computeNextGen(gridState, setGridState)}
-      >
-        Next gen
-      </Button>
-    </div>
+        <Button
+          className="btn"
+          variant="outlined"
+          color="primary"
+          onClick={() => computeNextGen(gridState, setGridState)}
+        >
+          Next gen
+        </Button>
+      </div>
+      <div className="rules">
+        <p>R U L E S </p>
+        <p>1. An alive cells survives if it has 2 or 3 alive neighbors.</p>
+        <p>
+          2. A dead cell becomes alive when it has exactly 3 alive neighbors.
+        </p>
+        <p>
+          3. All the other cells die in the next generation. Similarly, all
+          other dead cells stay dead.
+        </p>
+      </div>
+    </Container>
   );
 };
 
@@ -112,16 +121,39 @@ const countCellNeighbours = (gridState: Cell[][], cx: number, cy: number) => {
   return count;
 };
 
-const renderPrettyGridTable = (gridState: Cell[][]) => {
+const updateCellStatus = (
+  x: number,
+  y: number,
+  newCellState: CellStatus,
+  gridState: Cell[][],
+  setGridState
+) => {
+  let newGridState = [...gridState];
+  newGridState[x][y].status = newCellState;
+  setGridState(newGridState);
+};
+
+const toggleCellStatus = (
+  x: any,
+  y: any,
+  gridState: Cell[][],
+  setGridState
+) => {
+  const newStatus =
+    gridState[x][y].status === CellStatus.ALIVE
+      ? CellStatus.DEAD
+      : CellStatus.ALIVE;
+
+  updateCellStatus(x, y, newStatus, gridState, setGridState);
+};
+
+const renderPrettyGridTable = (gridState: Cell[][], setGridState) => {
   return (
-    <TableContainer component={Paper} style={{ maxWidth: '500px' }}>
+    <TableContainer component={Paper}>
       <Table size="small" aria-label="a dense table">
         <TableBody>
           {gridState.map((row, rowIndex) => (
-            <TableRow
-              key={rowIndex}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
+            <TableRow className="tableRow" key={rowIndex} sx={{ border: 0 }}>
               {row.map((cell, sIndex) => {
                 return (
                   <TableCell
@@ -129,10 +161,16 @@ const renderPrettyGridTable = (gridState: Cell[][]) => {
                     align="center"
                     padding="normal"
                     size="medium"
-                    style={{ background: cell.status ? 'green' : 'red' }}
-                  >
-                    {cell.status}
-                  </TableCell>
+                    className="tableCell"
+                    onClick={() =>
+                      toggleCellStatus(cell.x, cell.y, gridState, setGridState)
+                    }
+                    style={{
+                      background: cell.status
+                        ? color_palette.mountain_meadow
+                        : color_palette.blue_sapphire,
+                    }}
+                  ></TableCell>
                 );
               })}
             </TableRow>
@@ -143,24 +181,6 @@ const renderPrettyGridTable = (gridState: Cell[][]) => {
   );
 };
 
-function renderGridTable(gridState: Cell[][]) {
-  return (
-    <table>
-      <tbody>
-        {gridState.map((row, index) => {
-          return (
-            <tr key={index}>
-              {row.map((cell, sIndex) => {
-                return <td key={index + '-' + sIndex}> {cell.status} </td>;
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  );
-}
-
 const createNewGrid = () => {
   let grid = [];
 
@@ -169,20 +189,11 @@ const createNewGrid = () => {
     for (let j = 0; j < cols; j++) {
       grid[i][j] = {
         status: CellStatus.DEAD,
+        x: i,
+        y: j,
       };
     }
   }
-
-  grid[1][1].status = CellStatus.ALIVE;
-  grid[1][2].status = CellStatus.ALIVE;
-  grid[2][1].status = CellStatus.ALIVE;
-  grid[2][2].status = CellStatus.ALIVE;
-
-  grid[3][3].status = CellStatus.ALIVE;
-  grid[3][4].status = CellStatus.ALIVE;
-  grid[4][3].status = CellStatus.ALIVE;
-  grid[4][4].status = CellStatus.ALIVE;
-
   return grid;
 };
 
