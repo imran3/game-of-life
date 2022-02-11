@@ -129,6 +129,7 @@ const renderPrettyGridTable = (gridState: Cell[][]) => {
                     align="center"
                     padding="normal"
                     size="medium"
+                    style={{ background: cell.status ? 'green' : 'red' }}
                   >
                     {cell.status}
                   </TableCell>
