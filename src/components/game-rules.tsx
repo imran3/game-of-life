@@ -2,7 +2,10 @@ export const GameRules = () => {
   return (
     <div className="rules">
       <p>
-        <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">
+        <a
+          href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
+          target="_blank"
+        >
           <b>R U L E S </b>
         </a>
       </p>
