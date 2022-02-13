@@ -5,6 +5,7 @@ export const GameRules = () => {
         <a
           href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
           target="_blank"
+          rel="noreferrer"
         >
           <b>R U L E S </b>
         </a>

@@ -6,13 +6,17 @@ export const Footer = () => {
     <div className="footer">
       <div className="author footer-item">
         Made with <FavoriteIcon></FavoriteIcon> by{' '}
-        <a href="https://github.com/imran3/" target="_blank">
+        <a href="https://github.com/imran3/" target="_blank" rel="noreferrer">
           Imran Azam
         </a>
       </div>
       <div className="repo footer-item">
         <GitHubIcon></GitHubIcon>{' '}
-        <a href="https://github.com/imran3/game-of-life" target="_blank">
+        <a
+          href="https://github.com/imran3/game-of-life"
+          target="_blank"
+          rel="noreferrer"
+        >
           Source Code
         </a>
       </div>

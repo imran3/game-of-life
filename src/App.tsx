@@ -21,6 +21,7 @@ export const App = () => {
   // initialize game
   useEffect(() => {
     gameEngine.setRandomGridState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
