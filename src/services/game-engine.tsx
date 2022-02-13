@@ -1,21 +1,35 @@
+import { timeStamp } from 'console';
 import { Cell, CellStatus } from '../models/cell';
 import { rows, cols } from '../models/constants';
 
 export class GameEngine {
   gridState: Cell[][];
-  setGridState;
+  setGridState: Function;
+  autoPlay: number;
+  setAutoplay: Function;
 
-  constructor(gridState, setGridState) {
+  autoPlayIntervalStep = 500;
+
+  constructor(
+    gridState: Cell[][],
+    setGridState: Function,
+    autoPlay: number,
+    setAutoplay: Function
+  ) {
     this.gridState = gridState;
     this.setGridState = setGridState;
+    this.autoPlay = autoPlay;
+    this.setAutoplay = setAutoplay;
   }
 
-  resetGrid = () => {
+  resetGrid = (): void => {
+    if (this.autoPlay) this.stopAutoPlay();
+
     const newGrid = this.newGrid();
     this.setGridState(newGrid);
   };
 
-  newGrid = () => {
+  newGrid = (): Cell[][] => {
     let grid: Cell[][] = [];
 
     for (let i = 0; i < rows; i++) {
@@ -32,7 +46,7 @@ export class GameEngine {
     return grid;
   };
 
-  computeNextGeneration = () => {
+  computeNextGeneration = (): void => {
     let nextGenStatus = [];
 
     for (let x = 0; x < rows; x++) {
@@ -65,11 +79,9 @@ export class GameEngine {
     }
 
     this.setGridState(newGridState);
-
-    return newGridState;
   };
 
-  countCellNeighbours = (cx: number, cy: number) => {
+  countCellNeighbours = (x: number, y: number): number => {
     const neighborsMap = [
       [-1, -1],
       [-1, 0],
@@ -82,9 +94,9 @@ export class GameEngine {
     ];
     let count = 0;
 
-    neighborsMap.forEach(([x, y]) => {
-      let neighborgX = cx + x;
-      let neighborgY = cy + y;
+    neighborsMap.forEach(([nx, ny]) => {
+      let neighborgX = x + nx;
+      let neighborgY = y + ny;
 
       // remap coordinates if fall outside grid
       if (neighborgX < 0) neighborgX = rows - 1;
@@ -98,13 +110,15 @@ export class GameEngine {
     return count;
   };
 
-  setCellStatus = (x: number, y: number, newCellState: CellStatus) => {
+  setCellStatus = (x: number, y: number, newCellState: CellStatus): void => {
     let newGridState = [...this.gridState];
     newGridState[x][y].status = newCellState;
     this.setGridState(newGridState);
   };
 
   setRandomGridState = async () => {
+    if (this.autoPlay) this.stopAutoPlay();
+
     let randomGrid: Cell[][] = this.newGrid();
 
     let aliveCellsNum = 25;
@@ -125,7 +139,7 @@ export class GameEngine {
     this.setGridState(randomGrid);
   };
 
-  toggleCellStatus = (x: any, y: any) => {
+  toggleCellStatus = (x: any, y: any): void => {
     const newStatus =
       this.gridState[x][y].status === CellStatus.ALIVE
         ? CellStatus.DEAD
@@ -133,4 +147,21 @@ export class GameEngine {
 
     this.setCellStatus(x, y, newStatus);
   };
+
+  toggleAutoPlay = (): void => {
+    this.autoPlay ? this.stopAutoPlay() : this.startAutoPlay();
+  };
+
+  startAutoPlay(): void {
+    let autoPlayIntervalId = setInterval(() => {
+      this.computeNextGeneration();
+    }, this.autoPlayIntervalStep);
+
+    this.setAutoplay(autoPlayIntervalId);
+  }
+
+  stopAutoPlay(): void {
+    clearInterval(this.autoPlay);
+    this.setAutoplay(null);
+  }
 }

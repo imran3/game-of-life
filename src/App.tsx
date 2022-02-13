@@ -16,8 +16,13 @@ import { GameEngine } from './services/game-engine';
 
 export const App = () => {
   const [gridState, setGridState] = useState([]);
-
-  const gameEngine = new GameEngine(gridState, setGridState);
+  const [autoPlay, setAutoplay] = useState(null);
+  const gameEngine = new GameEngine(
+    gridState,
+    setGridState,
+    autoPlay,
+    setAutoplay
+  );
 
   // initialize game
   useEffect(() => {
@@ -33,9 +38,8 @@ export const App = () => {
       <div className="controls">
         <Button
           className="btn"
-          variant="contained"
+          variant="outlined"
           style={{
-            borderRadius: 15,
             backgroundColor: color_palette.pale_spring_Bud,
             color: color_palette.terra_cotta,
             fontSize: '18px',
@@ -44,11 +48,24 @@ export const App = () => {
         >
           Next gen
         </Button>
+
         <Button
           className="btn"
           variant="outlined"
           style={{
-            borderRadius: 15,
+            backgroundColor: color_palette.cadet_blue,
+            color: color_palette.pale_spring_Bud,
+            fontSize: '18px',
+          }}
+          onClick={() => gameEngine.toggleAutoPlay()}
+        >
+          {autoPlay ? 'Stop AutoPlay' : 'Start AutoPlay'}
+        </Button>
+
+        <Button
+          className="btn"
+          variant="outlined"
+          style={{
             backgroundColor: color_palette.alabaster,
             fontSize: '18px',
             color: color_palette.terra_cotta,
@@ -62,7 +79,6 @@ export const App = () => {
           className="btn"
           variant="outlined"
           style={{
-            borderRadius: 15,
             backgroundColor: color_palette.cadet_blue,
             color: color_palette.opal,
             fontSize: '18px',

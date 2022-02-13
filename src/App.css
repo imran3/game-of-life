@@ -6,6 +6,11 @@ body {
   padding: 0.5em;
 }
 
+h1 {
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-weight: 100;
+  line-height: 1.5;
+}
 .tableRow {
   border: none;
 }
@@ -23,8 +28,9 @@ body {
   margin-top: 2em;
   display: flex;
   background: #9bc1bc;
-  border-radius: 25px;
+  border-radius: 15px;
   padding: 1em;
+  justify-content: center;
 }
 
 .rules {
@@ -36,7 +42,7 @@ body {
 
   background: #9bc1bc;
   padding: 1.5em;
-  border-radius: 25px;
+  border-radius: 15px;
   margin-top: 1.5em;
 }
 
