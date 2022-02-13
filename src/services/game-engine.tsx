@@ -10,7 +10,12 @@ export class GameEngine {
     this.setGridState = setGridState;
   }
 
-  createNewGrid = () => {
+  resetGrid = () => {
+    const newGrid = this.newGrid();
+    this.setGridState(newGrid);
+  };
+
+  newGrid = () => {
     let grid: Cell[][] = [];
 
     for (let i = 0; i < rows; i++) {
@@ -24,11 +29,7 @@ export class GameEngine {
       }
     }
 
-    grid[5][5].status = CellStatus.ALIVE;
-    grid[5][6].status = CellStatus.ALIVE;
-    grid[5][7].status = CellStatus.ALIVE;
-
-    this.setGridState(grid);
+    return grid;
   };
 
   computeNextGeneration = () => {
@@ -64,6 +65,8 @@ export class GameEngine {
     }
 
     this.setGridState(newGridState);
+
+    return newGridState;
   };
 
   countCellNeighbours = (cx: number, cy: number) => {
@@ -102,7 +105,7 @@ export class GameEngine {
   };
 
   setRandomGridState = async () => {
-    this.setGridState(this.createNewGrid());
+    let randomGrid: Cell[][] = this.newGrid();
 
     let aliveCellsNum = 25;
     let i = 0;
@@ -110,14 +113,16 @@ export class GameEngine {
     do {
       const x = Math.floor(Math.random() * rows);
       const y = Math.floor(Math.random() * rows);
-      const cellStatus = this.gridState[x][y].status;
+      const cellStatus = randomGrid[x][y].status;
 
       if (cellStatus === CellStatus.DEAD) {
-        this.setCellStatus(x, y, CellStatus.ALIVE);
+        randomGrid[x][y].status = CellStatus.ALIVE;
       }
 
       i++;
     } while (i < aliveCellsNum);
+
+    this.setGridState(randomGrid);
   };
 
   toggleCellStatus = (x: any, y: any) => {

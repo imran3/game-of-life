@@ -21,7 +21,7 @@ export const App = () => {
 
   // initialize game
   useEffect(() => {
-    gameEngine.createNewGrid();
+    gameEngine.setRandomGridState();
   }, []);
 
   return (
@@ -67,7 +67,7 @@ export const App = () => {
             color: color_palette.opal,
             fontSize: '18px',
           }}
-          onClick={() => gameEngine.createNewGrid()}
+          onClick={() => gameEngine.resetGrid()}
         >
           Reset
         </Button>
