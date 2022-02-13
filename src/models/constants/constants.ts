@@ -1,7 +1,7 @@
 export const color_palette = {
-  blue_sapphire: '#05668d',
-  metallic_seaweed: '#028090',
-  persian_green: '#00a896',
-  mountain_meadow: '#02c39a',
-  pale_spring_bud: '#f0f3bd',
+  terra_cotta: '#ed6a5a',
+  pale_spring_Bud: '#f4f1bb',
+  opal: '#9bc1bc',
+  cadet_blue: '#5ca4a9',
+  alabaster: '#e6ebe0',
 };

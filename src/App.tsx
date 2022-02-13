@@ -1,7 +1,6 @@
 import {
   Button,
   Container,
-  Grid,
   Paper,
   Table,
   TableBody,
@@ -9,7 +8,6 @@ import {
   TableContainer,
   TableRow,
 } from '@mui/material';
-import { color } from '@mui/system';
 import { useState } from 'react';
 import './App.css';
 import { Cell, CellStatus } from './models/cell';
@@ -31,23 +29,48 @@ export const App = () => {
         <Button
           className="btn"
           variant="contained"
-          color="success"
-          onClick={() => setGridState(createNewGrid())}
+          style={{
+            borderRadius: 15,
+            backgroundColor: color_palette.pale_spring_Bud,
+            color: color_palette.terra_cotta,
+            fontSize: '18px',
+          }}
+          onClick={() => computeNextGen(gridState, setGridState)}
         >
-          New Grid
+          Next gen
+        </Button>
+        <Button
+          className="btn"
+          variant="outlined"
+          style={{
+            borderRadius: 15,
+            backgroundColor: color_palette.alabaster,
+            fontSize: '18px',
+            color: color_palette.terra_cotta,
+          }}
+          onClick={() => setRandomGridState(gridState, setGridState)}
+        >
+          Random Gen
         </Button>
 
         <Button
           className="btn"
           variant="outlined"
-          color="primary"
-          onClick={() => computeNextGen(gridState, setGridState)}
+          style={{
+            borderRadius: 15,
+            backgroundColor: color_palette.cadet_blue,
+            color: color_palette.opal,
+            fontSize: '18px',
+          }}
+          onClick={() => setGridState(createNewGrid())}
         >
-          Next gen
+          Reset
         </Button>
       </div>
       <div className="rules">
-        <p>R U L E S </p>
+        <p>
+          <b>R U L E S </b>
+        </p>
         <p>1. An alive cells survives if it has 2 or 3 alive neighbors.</p>
         <p>
           2. A dead cell becomes alive when it has exactly 3 alive neighbors.
@@ -167,8 +190,8 @@ const renderPrettyGridTable = (gridState: Cell[][], setGridState) => {
                     }
                     style={{
                       background: cell.status
-                        ? color_palette.mountain_meadow
-                        : color_palette.blue_sapphire,
+                        ? color_palette.terra_cotta
+                        : color_palette.pale_spring_Bud,
                     }}
                   ></TableCell>
                 );
@@ -181,8 +204,8 @@ const renderPrettyGridTable = (gridState: Cell[][], setGridState) => {
   );
 };
 
-const createNewGrid = () => {
-  let grid = [];
+const createNewGrid = (): Cell[][] => {
+  let grid: Cell[][] = [];
 
   for (let i = 0; i < rows; i++) {
     grid[i] = [];
@@ -194,7 +217,28 @@ const createNewGrid = () => {
       };
     }
   }
+
+  console.log('rset grid');
   return grid;
+};
+
+const setRandomGridState = async (gridState, setGridState) => {
+  setGridState(createNewGrid());
+
+  let aliveCellsNum = 25;
+  let i = 0;
+
+  do {
+    const x = Math.floor(Math.random() * rows);
+    const y = Math.floor(Math.random() * rows);
+    const cellStatus = gridState[x][y].status;
+
+    if (cellStatus === CellStatus.DEAD) {
+      updateCellStatus(x, y, CellStatus.ALIVE, gridState, setGridState);
+    }
+
+    i++;
+  } while (i < aliveCellsNum);
 };
 
 export default App;

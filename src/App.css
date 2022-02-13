@@ -1,5 +1,9 @@
+body {
+  background: #5ca4a9;
+}
 .App {
   text-align: center;
+  padding: 0.5em;
 }
 
 .tableRow {
@@ -11,12 +15,15 @@
   width: 3em;
   min-width: 3em;
   min-height: 3em;
+  border: 3px solid white;
 }
 
 .controls {
   margin-top: 2em;
   display: flex;
-  background-color: '#028090' !important;
+  background: #9bc1bc;
+  border-radius: 25px;
+  padding: 1em;
 }
 
 .rules {
@@ -25,6 +32,11 @@
   font-weight: 250;
   font-size: 1;
   line-height: 1.5;
+
+  background: #9bc1bc;
+  padding: 1.5em;
+  border-radius: 25px;
+  margin-top: 1.5em;
 }
 
 .controls .btn {
