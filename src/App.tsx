@@ -1,17 +1,11 @@
-import {
-  Button,
-  Container,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-} from '@mui/material';
+import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import './App.css';
-import { Cell } from './models/cell';
-import { color_palette } from './models/constants';
+import { Footer } from './components/footer';
+import { GameControls } from './components/game-controls';
+import { GameRules } from './components/game-rules';
+import { Header } from './components/header';
+import { PrettyGameGrid } from './components/pretty-game-grid';
 import { GameEngine } from './services/game-engine';
 
 export const App = () => {
@@ -31,109 +25,15 @@ export const App = () => {
 
   return (
     <Container maxWidth="md" className="App">
-      <h1>Game of Life</h1>
-      <div className="prettyGridTable">
-        {renderPrettyGridTable(gridState, gameEngine)}
-      </div>
-      <div className="controls">
-        <Button
-          className="btn"
-          variant="outlined"
-          style={{
-            backgroundColor: color_palette.pale_spring_Bud,
-            color: color_palette.terra_cotta,
-            fontSize: '18px',
-          }}
-          onClick={() => gameEngine.computeNextGeneration()}
-        >
-          Next gen
-        </Button>
-
-        <Button
-          className="btn"
-          variant="outlined"
-          style={{
-            backgroundColor: color_palette.cadet_blue,
-            color: color_palette.pale_spring_Bud,
-            fontSize: '18px',
-          }}
-          onClick={() => gameEngine.toggleAutoPlay()}
-        >
-          {autoPlay ? 'Stop AutoPlay' : 'Start AutoPlay'}
-        </Button>
-
-        <Button
-          className="btn"
-          variant="outlined"
-          style={{
-            backgroundColor: color_palette.alabaster,
-            fontSize: '18px',
-            color: color_palette.terra_cotta,
-          }}
-          onClick={() => gameEngine.setRandomGridState()}
-        >
-          Random Gen
-        </Button>
-
-        <Button
-          className="btn"
-          variant="outlined"
-          style={{
-            backgroundColor: color_palette.cadet_blue,
-            color: color_palette.opal,
-            fontSize: '18px',
-          }}
-          onClick={() => gameEngine.resetGrid()}
-        >
-          Reset
-        </Button>
-      </div>
-      <div className="rules">
-        <p>
-          <b>R U L E S </b>
-        </p>
-        <p>1. An alive cells survives if it has 2 or 3 alive neighbors.</p>
-        <p>
-          2. A dead cell becomes alive when it has exactly 3 alive neighbors.
-        </p>
-        <p>
-          3. All the other cells die in the next generation. Similarly, all
-          other dead cells stay dead.
-        </p>
-      </div>
+      <Header></Header>
+      <PrettyGameGrid
+        gridState={gridState}
+        gameEngine={gameEngine}
+      ></PrettyGameGrid>
+      <GameControls autoPlay={autoPlay} gameEngine={gameEngine}></GameControls>
+      <GameRules></GameRules>
+      <Footer></Footer>
     </Container>
-  );
-};
-
-const renderPrettyGridTable = (gridState: Cell[][], gameEngine) => {
-  return (
-    <TableContainer component={Paper}>
-      <Table size="small" aria-label="a dense table">
-        <TableBody>
-          {gridState.map((row, rowIndex) => (
-            <TableRow className="tableRow" key={rowIndex} sx={{ border: 0 }}>
-              {row.map((cell, sIndex) => {
-                return (
-                  <TableCell
-                    key={rowIndex + '-' + sIndex}
-                    align="center"
-                    padding="normal"
-                    size="medium"
-                    className="tableCell"
-                    onClick={() => gameEngine.toggleCellStatus(cell.x, cell.y)}
-                    style={{
-                      background: cell.status
-                        ? color_palette.terra_cotta
-                        : color_palette.pale_spring_Bud,
-                    }}
-                  ></TableCell>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
   );
 };
 

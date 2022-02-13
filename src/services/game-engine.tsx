@@ -1,4 +1,3 @@
-import { timeStamp } from 'console';
 import { Cell, CellStatus } from '../models/cell';
 import { rows, cols } from '../models/constants';
 
