@@ -5,3 +5,6 @@ export const color_palette = {
   cadet_blue: '#5ca4a9',
   alabaster: '#e6ebe0',
 };
+
+export const rows = 10;
+export const cols = 10;
