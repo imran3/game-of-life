@@ -6,6 +6,9 @@ It is a zero-player game, meaning that its evolution is determined by its initia
 
 Learn more about it on [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
+# Is there a live demo?
+Yes, you can check out the app running here: https://game-of-life0.web.app.
+
 # How do i run it locally?
 
 This project is built with React, you need have [Node.js](https://nodejs.org/en/download/) installed in order to run it locally.
